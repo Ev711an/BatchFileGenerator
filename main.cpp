@@ -25,6 +25,7 @@ ofstream outputFile;
 int jarFile(); //creates a batch file to execute a .jar
 int exeFile(); //for a .exe
 int minecraftServer(); //for a minecraft server
+string checkForEndStringAndAdd(string inString, string reqString);
 
 int main() {
 	//response to query about filetype
@@ -166,7 +167,7 @@ int minecraftServer() {
 	outputFile.open("CustomJar.bat");
 
 	//gets filename
-	cout << "What is the filename (including .jar at the end)\n";
+	cout << "What is the filename?\n";
 	cin >> filename;
 
 	//gets RAM
@@ -182,8 +183,33 @@ int minecraftServer() {
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
-			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M " << filename << ' ' << gui;
+			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M " << checkForEndStringAndAdd(filename, ".jar") << ' ' << gui;
 
 	//returns 0, successful execution of the program.
 	return 0;
+}
+
+
+
+
+string checkForEndStringAndAdd(string inString, string reqString) {
+	int reqCharPresent = 0;
+
+	for (int i = 0; i < reqString.length(); i++) {
+		char inStringChar = inString.at((inString.length() - reqString.length()) + 1 + i);
+		char reqStringChar = reqString.at(i);
+
+		if (inStringChar == reqStringChar) {
+			reqCharPresent++;
+		}
+	}
+
+	if (reqCharPresent == reqString.length()) {
+		return inString;
+	}
+	else {
+		string outString = inString + reqString;
+		return outString;
+	}
+
 }
