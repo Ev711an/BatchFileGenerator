@@ -1,8 +1,20 @@
 /*
- * main.cpp
+ * Batch File Generator
  *
  *  Created on: May 21, 2019
  *      Author: Evan Garrison
+ */
+
+/**
+ * Version 0.1.1 | May 28, 2019
+ *
+ * Contributers:
+ * Evan Garrison
+ *
+ * Added Function to add file extension if it is not already present.
+ * Also added more comments, and changed name of outputed .jar from minecraft server
+ *
+ * This version is tested and working!
  */
 
 /*
@@ -100,7 +112,7 @@ int jarFile() {
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
-			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M " << filename << ' ' << parameters;
+			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M " << checkForEndStringAndAdd(filename, ".jar") << ' ' << parameters;
 
 	//returns 0, successful execution of the program.
 	return 0;
@@ -142,7 +154,7 @@ int exeFile() {
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
-			<< filename << ' ' << parameters;
+			<< checkForEndStringAndAdd(filename, ".exe") << ' ' << parameters;
 
 	//returns 0, successful execution of the program.
 	return 0;
@@ -164,7 +176,7 @@ int minecraftServer() {
 
 	//output file variables
 	string filename;
-	outputFile.open("CustomJar.bat");
+	outputFile.open("MinecraftServer.bat");
 
 	//gets filename
 	cout << "What is the filename?\n";
@@ -183,7 +195,8 @@ int minecraftServer() {
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
-			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M " << checkForEndStringAndAdd(filename, ".jar") << ' ' << gui;
+			<< "java -jar " << "-Xms" << ram << "M -Xmx" << ram << "M "
+			<< checkForEndStringAndAdd(filename, ".jar") << ' ' << gui;
 
 	//returns 0, successful execution of the program.
 	return 0;
@@ -191,23 +204,31 @@ int minecraftServer() {
 
 
 
-
+/**
+ * This function checks a string for the required string at the end, and adds it if it isn't present
+ */
 string checkForEndStringAndAdd(string inString, string reqString) {
+	//initiallize test variable
 	int reqCharPresent = 0;
 
-	for (int i = 0; i < reqString.length(); i++) {
-		char inStringChar = inString.at((inString.length() - reqString.length()) + 1 + i);
+	//loop to check for the character at each point in the end.
+	for (int i = 0; i < reqString.length() && inString.length() >= reqString.length(); i++) {
+		char inStringChar = inString.at((inString.length() - reqString.length()) + i);
 		char reqStringChar = reqString.at(i);
 
+		//If the two corresponding characters are the same, add one to the test variable
 		if (inStringChar == reqStringChar) {
 			reqCharPresent++;
 		}
 	}
 
+	//my weird way of checking that the full required string is there, above for each matching variable we add
+	//one to it. so, if the full string is present, the test variable will be equal to the length of the required string.
 	if (reqCharPresent == reqString.length()) {
 		return inString;
 	}
 	else {
+		//and it it isn't there, add the reqString to the end of the inString.
 		string outString = inString + reqString;
 		return outString;
 	}
