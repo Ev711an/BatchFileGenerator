@@ -6,13 +6,26 @@
  */
 
 /**
+ * Version 0.1.2 | May 30, 2019
+ *
+ * Contributers:
+ * Evan Garrison
+ *
+ * -Added code to ask for a name for outputted batch file, will automatically check for .bat extension and add
+ * if need.
+ * -More comments!
+ *
+ * This version is tested and working, but incomplete. More additions are in progress.
+ */
+
+/**
  * Version 0.1.1 | May 28, 2019
  *
  * Contributers:
  * Evan Garrison
  *
- * Added Function to add file extension if it is not already present.
- * Also added more comments, and changed name of outputed .jar from minecraft server
+ * -Added Function to add file extension if it is not already present.
+ * -Also added more comments, and changed name of outputed .jar from minecraft server
  *
  * This version is tested and working!
  */
@@ -26,7 +39,7 @@
  * First Viable batch file generator, has basic functionality, can make
  * 3 different types of batch file: For an .exe, a .jar and a minecraft server.
  */
-#include <iostream> //For test IO
+#include <iostream> //For keyboard IO
 #include <fstream> //For file IO
 using namespace std; //Because I don't feel like putting that in front of cout, cin, etc.
 
@@ -89,10 +102,10 @@ int jarFile() {
 
 	//output file variables
 	string filename;
-	outputFile.open("CustomJar.bat");
+	string batname;
 
 	//gets filename
-	cout << "What is the filename (including .jar at the end)\n";
+	cout << "What is the filename?\n";
 	cin >> filename;
 
 	//gets RAM
@@ -101,14 +114,19 @@ int jarFile() {
 
 	//gets number of additional parameters
 	cout << "How many more parameters do you have(if none, enter 0)?\n";
-		cin >> numParameters;
+	cin >> numParameters;
 
-		//entering additional parameters if needed
-		for (int i = 0; i < numParameters; i++) {
+	//entering additional parameters if needed
+	for (int i = 0; i < numParameters; i++) {
 			cout << "Enter Parameter " << i + 1 << ":\n";
 			cin >> tempString;
 			parameters = parameters + tempString + ' ';
-		}
+	}
+
+	//gets name of batch file and opens output file
+	cout << "What do you want to call the batch file?\n";
+	cin >> batname;
+	outputFile.open(checkForEndStringAndAdd(batname, ".bat"));
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
@@ -123,22 +141,21 @@ int jarFile() {
 
 
 /**
- *
+ * Makes a batch file to run an exe file. This has no real purpose, unless for some reason you wanted to have a
+ * batch file with additional parameters to running a program.
  */
 int exeFile() {
-	//filename, includes the .exe, will eventually add logic to automatically add .exe
+	//file variables
 	string filename;
+	string batname;
 
 	//variables for extra parameters, if applicable
 	string tempString;
 	string parameters = "";
 	int numParameters;
 
-	//opens the output file for the batch file
-	outputFile.open("CustomExe.bat");
-
 	//gets filename
-	cout << "What is the filename (including .exe at the end)\n";
+	cout << "What is the filename?\n";
 	cin >> filename;
 
 	//gets number of additional parameters
@@ -152,6 +169,11 @@ int exeFile() {
 		parameters = parameters + tempString + ' ';
 	}
 
+	//gets name of batch file and opens output file
+	cout << "What do you want to call the batch file?\n";
+	cin >> batname;
+	outputFile.open(checkForEndStringAndAdd(batname, ".bat"));
+
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
 			<< checkForEndStringAndAdd(filename, ".exe") << ' ' << parameters;
@@ -164,7 +186,8 @@ int exeFile() {
 
 
 /**
- *
+ * Created batch file for executing a minecraft server jar file, asks for amounts of RAM and whether the user wants to
+ * use the gui interface.
  */
 int minecraftServer() {
 	//RAM variable
@@ -176,7 +199,7 @@ int minecraftServer() {
 
 	//output file variables
 	string filename;
-	outputFile.open("MinecraftServer.bat");
+	string batname;
 
 	//gets filename
 	cout << "What is the filename?\n";
@@ -192,6 +215,11 @@ int minecraftServer() {
 
 	if (isgui == 'Y' || isgui == 'y') gui = "";
 	else gui = "nogui";
+
+	//gets name of batch file and opens output file
+	cout << "What do you want to call the batch file?\n";
+	cin >> batname;
+	outputFile.open(checkForEndStringAndAdd(batname, ".bat"));
 
 	//outputs all needed code to batch file.
 	outputFile << "echo off\n"
